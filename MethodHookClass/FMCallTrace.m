@@ -12,6 +12,7 @@
 
 
 static NSMutableDictionary *dic;
+static NSString *PREFIX = @"PREFIX";
 
 @implementation FMCallTrace
 
@@ -85,6 +86,11 @@ static NSMutableDictionary *dic;
     
 }
 
++ (void)setPrefix:(NSString *)prefix
+{
+    PREFIX = prefix;
+}
+
 + (NSArray *)mainCallStack {
     NSMutableArray *array = [[NSMutableArray alloc] init];
     fmCallNode_t *node = fmGetCurrentCall();
@@ -94,7 +100,7 @@ static NSMutableDictionary *dic;
     for (int i = 0; i < 1000; i++) {
         if (node && node->depth == 1) {
             NSString *clsName = NSStringFromClass(node->cls);
-            if ([clsName hasPrefix:@"prefix"]) {
+            if ([PREFIX isEqualToString:@"PREFIX"] || [clsName hasPrefix:PREFIX]) {
                 [array addObject:[NSString stringWithFormat:@"[%@ %@]", NSStringFromClass(node->cls), NSStringFromSelector(node->sel)]];
             }
             node = node->previouse;

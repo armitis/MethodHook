@@ -20,5 +20,7 @@
 + (void)stopSaveAndClean; //停止保存打印并进行内存清理
 + (NSString *)storeString;
 + (NSArray *)mainCallStack;
+//通过特定的方法前缀过滤需要记录的方法
++ (void)setPrefix:(NSString *)prefix;
 
 @end
