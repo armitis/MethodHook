@@ -91,7 +91,7 @@ static NSString *PREFIX = @"PREFIX";
     PREFIX = prefix;
 }
 
-+ (NSArray *)mainCallStack {
++ (NSArray *)mainCallLog {
     NSMutableArray *array = [[NSMutableArray alloc] init];
     fmCallNode_t *node = fmGetCurrentCall();
     if (!node) {

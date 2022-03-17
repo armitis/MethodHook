@@ -19,7 +19,7 @@
 + (void)save; //保存和打印记录，如果不是短时间 stop 的话使用 saveAndClean
 + (void)stopSaveAndClean; //停止保存打印并进行内存清理
 + (NSString *)storeString;
-+ (NSArray *)mainCallStack;
++ (NSArray *)mainCallLog;
 //通过特定的方法前缀过滤需要记录的方法
 + (void)setPrefix:(NSString *)prefix;
 
