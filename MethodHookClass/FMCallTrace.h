@@ -18,11 +18,12 @@
 + (void)stop; //停止记录
 + (void)save; //保存和打印记录，如果不是短时间 stop 的话使用 saveAndClean
 + (void)stopSaveAndClean; //停止保存打印并进行内存清理
-+ (NSString *)storeString;
 + (NSArray *)mainCallLog;
 //通过特定的方法前缀过滤需要记录的方法
 + (void)setPrefix:(NSString *)prefix;
 //获得trace数据
 + (NSString *)traceJsonString;
+//获得调用次数信息
++ (NSString *)callCountString;
 
 @end

@@ -14,6 +14,7 @@
 static NSMutableDictionary *dic;
 static NSString *PREFIX = @"PREFIX";
 static NSMutableArray *traceArray;
+static NSMutableDictionary *callCountDictionary;
 
 @implementation FMCallTrace
 
@@ -29,6 +30,11 @@ static NSMutableArray *traceArray;
         traceArray = [[NSMutableArray alloc] init];
     } else {
         [traceArray removeAllObjects];
+    }
+    if (callCountDictionary == nil) {
+        callCountDictionary = [[NSMutableDictionary alloc] init];
+    } else {
+        [callCountDictionary removeAllObjects];
     }
     fmCallTraceStart();
 }
@@ -128,6 +134,16 @@ static NSMutableArray *traceArray;
     return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 }
 
++ (NSString *)callCountString
+{
+    NSError *error = nil;
+    NSData *data = [NSJSONSerialization dataWithJSONObject:callCountDictionary options:0 error:&error];
+    if (error) {
+        return @"";
+    }
+    return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+}
+
 + (NSArray<FMCallTraceTimeCostModel *>*)loadRecords {
     NSMutableArray<FMCallTraceTimeCostModel *> *arr = [NSMutableArray new];
     int num = 0;
@@ -146,6 +162,7 @@ static NSMutableArray *traceArray;
     }
     
     //转换成chrome://tracing/格式
+    //统计方法调用次数
     for (int i = 0; i < arr.count; i++) {
         FMCallTraceTimeCostModel *model = arr[i];
         NSDictionary *traceStart = @{
@@ -164,6 +181,14 @@ static NSMutableArray *traceArray;
         };
         [traceArray addObject:traceStart];
         [traceArray addObject:traceEnd];
+        
+        if (callCountDictionary[model.storeKey] == nil) {
+            callCountDictionary[model.storeKey] = @(1);
+        } else {
+            //保持耗时最大的
+            NSNumber *count = callCountDictionary[model.storeKey];
+            callCountDictionary[model.storeKey] = @([count integerValue] + 1);
+        }
     }
     
     NSUInteger count = arr.count;
@@ -188,12 +213,6 @@ static NSMutableArray *traceArray;
         }
     }
     return arr;
-}
-
-
-+ (NSString *)storeString
-{
-    return [NSString stringWithFormat:@"%@", dic];
 }
 
 @end
