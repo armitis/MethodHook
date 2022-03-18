@@ -22,5 +22,7 @@
 + (NSArray *)mainCallLog;
 //通过特定的方法前缀过滤需要记录的方法
 + (void)setPrefix:(NSString *)prefix;
+//获得trace数据
++ (NSString *)traceJsonString;
 
 @end

@@ -16,6 +16,8 @@ typedef struct {
     __unsafe_unretained Class cls;
     SEL sel;
     uint64_t time; // us (1/1000 ms)
+    uint64_t start;
+    uint64_t end;
     int depth;
 } fmCallRecord;
 

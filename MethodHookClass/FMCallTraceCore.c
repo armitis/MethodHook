@@ -166,6 +166,8 @@ static inline uintptr_t pop_call_record() {
             log->depth = curIndex;
             log->sel = pRecord->cmd;
             log->time = cost;
+            log->end = time;
+            log->start = pRecord->time;
         }
     }
     return pRecord->lr;

@@ -13,6 +13,7 @@
 
 static NSMutableDictionary *dic;
 static NSString *PREFIX = @"PREFIX";
+static NSMutableArray *traceArray;
 
 @implementation FMCallTrace
 
@@ -21,6 +22,13 @@ static NSString *PREFIX = @"PREFIX";
 + (void)start {
     if (dic == nil) {
         dic = [[NSMutableDictionary alloc] init];
+    } else {
+        [dic removeAllObjects];
+    }
+    if (traceArray == nil) {
+        traceArray = [[NSMutableArray alloc] init];
+    } else {
+        [traceArray removeAllObjects];
     }
     fmCallTraceStart();
 }
@@ -110,6 +118,16 @@ static NSString *PREFIX = @"PREFIX";
     return [array copy];
 }
 
++ (NSString *)traceJsonString
+{
+    NSError *error = nil;
+    NSData *data = [NSJSONSerialization dataWithJSONObject:traceArray options:0 error:&error];
+    if (error) {
+        return @"";
+    }
+    return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+}
+
 + (NSArray<FMCallTraceTimeCostModel *>*)loadRecords {
     NSMutableArray<FMCallTraceTimeCostModel *> *arr = [NSMutableArray new];
     int num = 0;
@@ -122,8 +140,32 @@ static NSString *PREFIX = @"PREFIX";
         model.isClassMethod = class_isMetaClass(rd->cls);
         model.timeCost = (double)rd->time / 1000000.0;
         model.callDepth = rd->depth;
+        model.start = ((double)rd->start);
+        model.end = ((double)rd->end);
         [arr addObject:model];
     }
+    
+    //转换成chrome://tracing/格式
+    for (int i = 0; i < arr.count; i++) {
+        FMCallTraceTimeCostModel *model = arr[i];
+        NSDictionary *traceStart = @{
+            @"name": [NSString stringWithFormat:@"%@: %@", model.className, model.methodName],
+            @"ph": @"B",
+            @"pid": @"APP",
+            @"tid": @"Main",
+            @"ts": @(model.start)
+        };
+        NSDictionary *traceEnd = @{
+            @"name": [NSString stringWithFormat:@"%@: %@", model.className, model.methodName],
+            @"ph": @"E",
+            @"pid": @"APP",
+            @"tid": @"Main",
+            @"ts": @(model.end)
+        };
+        [traceArray addObject:traceStart];
+        [traceArray addObject:traceEnd];
+    }
+    
     NSUInteger count = arr.count;
     for (NSUInteger i = 0; i < count; i++) {
         FMCallTraceTimeCostModel *model = arr[i];
