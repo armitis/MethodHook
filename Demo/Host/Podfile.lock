@@ -1,0 +1,16 @@
+PODS:
+  - MethodHook (1.0.0)
+
+DEPENDENCIES:
+  - MethodHook (from `../../`)
+
+EXTERNAL SOURCES:
+  MethodHook:
+    :path: "../../"
+
+SPEC CHECKSUMS:
+  MethodHook: 1399ef318da6a53ad57b1c5e4673f575f28db2eb
+
+PODFILE CHECKSUM: 14d6da158db3fc4fb4aa758fa078f3cb72f399b4
+
+COCOAPODS: 1.11.3
