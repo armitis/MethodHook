@@ -22,7 +22,17 @@
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [FMTimeProfiler stopRecord];
+        NSLog(@"%@");
     });
+    [self do1];
+
+}
+
+- (void)do1
+{
+    for (int i = 0; i < 50000; i++) {
+        NSLog(@"");
+    }
 }
 
 
